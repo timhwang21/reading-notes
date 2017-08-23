@@ -32,7 +32,6 @@ dropInt n (_:xs) = dropInt (n - 1) xs
 
 sumInt :: (Eq a, Num a) => [a] -> a
 sumInt []     = 0
-sumInt (x:[]) = x
 sumInt (x:xs) = x + sumInt xs
 
 scanSum :: (Eq a, Num a) => [a] -> [a]
