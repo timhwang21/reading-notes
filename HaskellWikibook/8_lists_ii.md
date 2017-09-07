@@ -73,6 +73,7 @@ negation x = (- x)
 
 mapNegation :: [Int] -> [Int]
 mapNegation = map negation
+mapNegation' = map (\x -> (- x))
 
 tupleCount :: String -> (Int, Char)
 tupleCount string = (length string, head string)

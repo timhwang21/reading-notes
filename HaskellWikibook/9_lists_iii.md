@@ -4,6 +4,30 @@
 
 ### Folds
 
+```haskell
+-- acc == 0
+sum []     = 0
+sum (x:xs) = x + sum xs
+
+-- acc == 0
+product     [] = 0
+product (x:xs) = x * product xs
+
+-- acc == []
+concat   []   = []
+concat (x:xs) = x ++ concat xs
+
+-- generic
+-- acc == []
+reducer []     = []
+reducer (x:xs) = someFunc x (reducer xs)
+
+-- fold
+-- added arguments: f and acc
+fold f acc []     = acc
+fold f acc (x:xs) = f x fold (f acc xs)
+```
+
 #### `foldr`
 
 Right-associative fold; collapses list from right-to-left.

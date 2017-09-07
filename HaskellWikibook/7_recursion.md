@@ -32,3 +32,12 @@ zip' [] _ = []
 zip' _ [] = []
 zip' (x1:xs1) (x2:xs2) = (x1,x2) : zip' xs1 xs2
 ```
+
+## Factorial with reduce
+
+```haskell
+import Data.Ix
+
+factorial :: Int a -> a -> a
+factorial n = foldr1 (*) $ range $ (,) 1 n
+```
