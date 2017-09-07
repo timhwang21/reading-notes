@@ -2,9 +2,9 @@
 
 ## Evaluation strategy
 
-Haskell is neither **call by reference** or **call by value**. Instead, it is **call by name**.
+Haskell is neither **call by reference** or **call by value**. Instead, it is **call by need**.
 
-**Call by name** is a **non-strict** (lazy) evaluation strategy. Arguments are not evaluated until the function tries to access the value of the argument. (So, if an argument is passed but not used, it is not accessed.)
+**Call by need** is a **non-strict** (lazy) evaluation strategy that is a specific type of **call by name** (the difference being that call by need is memoized). Arguments are not evaluated until the function tries to access the value of the argument. (So, if an argument is passed but not used, it is not accessed.)
 
 ```ruby
 def foo used, unused
