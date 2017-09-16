@@ -3,7 +3,7 @@
 ### Difference between `Promise` and `Future`
 * Promises are invoked instantly (constructor calls promise)
 
-```
+```javascript
 console.log('start');
 const foo = new Promise((res, rej) => {
   console.log('promise');
@@ -14,7 +14,7 @@ console.log('end');
 // promise
 // end
 ```
-```
+```javascript
 console.log('start');
 const foo = new Future((res, rej) => {
   console.log('future');
