@@ -63,7 +63,7 @@ Types are used for type synonyms or aliases of existing types:
 type FirstName = String
 type LastName = String
 -- now we can write more descriptive functions that work with names
--- now we can write 
+-- now we can write
 
 -- String itself is an alias
 type String = [Char]

@@ -256,6 +256,13 @@ reverse'    = foldl (\xs x -> x:xs) []
 
 ### List Comprehensions
 
+`[x | x <- list, boolFunc list]`
+
+Three parts:
+* `x |`: single list element to be used
+* `x <- list`: Take element `x` from `list`
+* `boolFunc`: function to be applied to `list` to decide if an element should be taken
+
 ```haskell
 returnDivisible :: Int -> [Int] -> [Int]
 -- with list comprehension
