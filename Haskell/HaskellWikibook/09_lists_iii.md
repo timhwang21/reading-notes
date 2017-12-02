@@ -151,6 +151,10 @@ sum []     = 0
 sum (x:xs) = x + sum xs
 ```
 
+#### `foldr` vs. `foldl`
+
+Note that `foldl` associates `acc` with `x`, while `foldr` associates `acc` with `xs`. This illustrates the "right" and "left": the right-fold reduces the accumulator starting from the list end, while the left-fold does so from the list-start.
+
 ### Scans
 
 #### `scanl`, `scanr`, `scanl1`, `scanr1`
