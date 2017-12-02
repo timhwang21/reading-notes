@@ -1,10 +1,25 @@
 # Control Structures
 
+TL;DR:
+
+| Statement        | Expression       |
+|------------------|------------------|
+| Pattern-matching | `case`           |
+| Guards           | `if..then..else` |
+| `where`          | `let..in`, \x -> |
+
+Expressions are more **flexible** (referential transparency).
+Statements are more **readable** (in some common cases).
+
+Also, note that expressions tend to be fully syntactically wrapped: they all start with a `keyword` and usually have an indentation difference that can denote the end of the wrapping.
+
 ## `if`
 
 * `if`s are expressions in Haskel1.
   * This means that `if then else` behaves more like a ternary than if-statements in other languages.
   * This also means that `then` and `else` can't be omitted.
+  * Note: statements are *executed*, expressions are *evaluated*.
+  * Guards are **NOT** expressions, however, so they cannot be embedded with referential transparency.
 * `if`s and guards are mostly interchangeable:
 
 ```haskell
@@ -19,6 +34,14 @@ badNumToChar n
   | n == 1 = 'a'
   | n == 2 = 'b'
   | otherwise = "dunno"
+```
+
+Remember you can combine pattern matching and if/guards:
+
+```haskell
+contrived (x:xs)
+  | x == 1 = True
+  | otherwise = False
 ```
 
 ## `case`
@@ -88,3 +111,47 @@ doGuess num = do
 Note: `LT` is **l**ess **t**han, `GT` is **g**reater **t**han, `EQ` is **eq**ual.
 
 Compared to `>`, `<`, `==`: the former are values of type `Ordering`, while the latter are infix functions.
+
+## `let`, `where` & lambdas
+
+`where` is analogous to block-scoped variables, while `let` is like a hypothetical "expression-scoped" variable:
+
+```haskell
+let var = 123 in var * 2 * var
+(let var = 123 in var * 2) * var -- doesn't work; var isn't defined outside parens
+```
+
+```haskell
+doStuff :: Int -> String
+doStuff x
+  | x < 3     = report "< 3"
+  | otherwise = report ">= 3"
+  where
+    report y = "the input is " ++ y
+
+-- because we can't wrap the whole function definition in an expression, we
+-- can't use let without redefining it for each guard result
+doStuffVerbose :: Int -> String
+doStuffVerbose x
+  | x < 3     = let report y = "the input is " ++ y in report "< 3"
+  | otherwise = let report y = "the input is " ++ y in report ">= 3"
+```
+
+Lambdas are even more lightweight, but they can only contain a single pattern.
+
+### Lazy evaluation
+
+Like anything else in Haskell, variables are lazily evaluated:
+
+```haskell
+doStuff x =
+  let xhead = head x
+      xtail = tail x
+      xexpensive = someExpensiveFn x
+  in case x of
+    0 -> xhead
+    1 -> xtail
+    2 -> xexpensive
+```
+
+In the above contrived example, `xexpensive` will never be called if the first two `case` paths are taken.

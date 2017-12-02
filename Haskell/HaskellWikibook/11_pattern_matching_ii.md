@@ -53,6 +53,51 @@ Therefore, when matching against lists, we can match against the two list constr
 
 Earlier we saw the pattern `(x1:x2:xs)`. As `:` is the list constructor that is perfectly valid.
 
+### Pattern matching tuples
+
+Acts similarly to lists, but with set parameter count
+
+```haskell
+norm3D :: (Floating a) => (a, a, a) -> a
+norm3D (x, y, z) = sqrt (x^2 + y^2 + z^2)
+```
+
+### Pattern matching literals
+
+Things like integers and chars can be used in pattern matching:
+
+```haskell
+badCaps :: String -> String
+badCaps ('a':xs) = 'A':xs
+badCaps ('b':xs) = 'B':xs
+badCaps _        = "Dunno"
+```
+
+Note that `True` and `False` are NOT literals!
+
+`data Bool = True | False`
+
+### Pattern matching different types
+
+Haskell (intentionally?) makes it difficult to pattern match on drastically different types, e.g. matching on a `String` OR a `Int`. One alternative that also aids documention and clarity is to define a more specific data type.
+
+```haskell
+-- bad
+-- note: not a valid type signature
+truncateYearsBad :: (String || Int) -> String
+truncateYearsBad (String) = drop 2
+truncateYearsBad (Int) = (`mod` 100) -- (operators can be curried in either direction)
+
+-- better
+data Year = YearStr String
+          | YearInt Int
+          deriving (Show)
+
+truncateYearsBetter :: Year -> String
+truncateYearsBetter (YearStr s) = drop 2 s
+truncateYearsBetter (YearInt i) = (`mod` 100) i
+```
+
 ### Sugar: As-patterns (`@`)
 
 `var@pattern` binds the entire match to `var`, while still binding the pattern.
@@ -62,7 +107,8 @@ Regular `map` is `map :: (a -> b) -> [a] -> [b]`. Let's say we want to write a `
 ```haskell
 map2 :: ([a] -> a -> b) -> [a] -> [b]
 map2 _ []   = []
-map2 f list = f list (head list) : map2 f (tail list)
+map2 f (x:xs) = f (x:xs) x : map2 f xs -- needless cons call
+map2LessBad f list = f list (head list) : map2 f (tail list) -- verbose
 ```
 
 We can abbreviate the last match as:
