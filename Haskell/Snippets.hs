@@ -1,13 +1,13 @@
-import Data.Char
+import           Data.Char
 
 -- any small functions that catch my attention are logged here
 
 sentenceCase :: String -> String
-sentenceCase [] = []
+sentenceCase []     = []
 sentenceCase (x:xs) = toUpper x : map toLower xs
 
 capLast :: [String] -> [String]
-capLast [] = []
+capLast []     = []
 capLast (x:[]) = (sentenceCase x) : []
 capLast (x:xs) = (map toLower x) : (capLast xs)
 
@@ -15,8 +15,8 @@ sentenceReverse :: String -> String
 sentenceReverse = (unwords . reverse . capLast . words)
 
 nonetrue :: [Bool] -> Bool
-nonetrue [] = False
-nonetrue (True:xs) = False
+nonetrue []         = False
+nonetrue (True:xs)  = False
 nonetrue (False:xs) = nonetrue $ tail xs
 
 onetrue :: [Bool] -> Bool
