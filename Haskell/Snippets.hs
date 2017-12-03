@@ -1,6 +1,6 @@
 import Data.Char
 
-import Data.Char
+-- any small functions that catch my attention are logged here
 
 sentenceCase :: String -> String
 sentenceCase [] = []
@@ -34,3 +34,9 @@ fibonacci n = head list + head (tail list) : list
   where
   list = fibonacci (n - 1)
 
+quicksort :: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) = (quicksort less) ++ [x] ++ (quicksort more)
+  where
+    less = filter (> x) xs
+    more = filter (<= x) xs
