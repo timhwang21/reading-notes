@@ -16,7 +16,7 @@ Also see [haskell.org docs](https://wiki.haskell.org/Import).
 
 ##### Regular
 
-```
+```haskell
 -- imports all exports as qualified (namespaced) and global
 import Path.To.Module
 

@@ -106,6 +106,7 @@ foldr1 _ []     = error "empty list"
 foldl1 :: (a -> a -> a) -> [a] -> a
 foldl1 f (x:xs) = foldl1 f x xs
 foldl1 _ []     = error "empty list"
+```
 
 #### `foldr` vs. `foldl`
 

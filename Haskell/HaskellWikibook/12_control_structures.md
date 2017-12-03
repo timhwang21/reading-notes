@@ -68,6 +68,7 @@ One important difference is that pattern matching is a statement while `case` is
 data Color = Black | White | RGB Int Int Int
 
 getColor :: Color -> String
+```
 
 One important difference is that pattern matching is a statement while `case` is an expression like `if`:
 
