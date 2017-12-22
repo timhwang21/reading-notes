@@ -34,9 +34,37 @@ fibonacci n = head list + head (tail list) : list
   where
   list = fibonacci (n - 1)
 
-quicksort :: (Ord a) => [a] -> [a]
-quicksort [] = []
-quicksort (x:xs) = (quicksort less) ++ [x] ++ (quicksort more)
+quickSort :: Ord t => [t] -> [t]
+quickSort [] = []
+quickSort (x:xs) = (quickSort less) ++ [x] ++ (quickSort more)
+    where
+      (less, more) = splitAtPivot x xs
+
+splitAtPivot :: Ord t => t -> [t] -> ([t], [t])
+splitAtPivot _ [] = ([], [])
+splitAtPivot n (x:xs)
+  | x < n     = (x : fst split, snd split)
+  | otherwise = (fst split, x : snd split)
   where
-    less = filter (> x) xs
-    more = filter (<= x) xs
+    split = splitAtPivot n xs
+
+mergeSort :: Ord t => [t] -> [t]
+mergeSort [] = []
+mergeSort [x] = [x]
+mergeSort xs = merge (mergeSort fstHalf) (mergeSort sndHalf)
+    where
+        fstHalf = take halfLen xs
+        sndHalf = drop halfLen xs
+        halfLen = length xs `div` 2
+
+merge :: Ord t => [t] -> [t] -> [t]
+merge xs [] = xs
+merge [] ys = ys
+merge (x:xs) (y:ys)
+  | x <= y    = x : merge xs (y:ys)
+  | otherwise = y : merge (x:xs) ys
+
+houserobber :: [Int] -> Int
+houserobber = snd . (foldr f (0, 0)) . reverse
+  where
+    f n (prevMax, currMax) = (currMax, max currMax (prevMax + n))
