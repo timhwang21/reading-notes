@@ -51,6 +51,10 @@ x = 1
 # you also can't chain as easily
 [0 | [1 | [2 | []]]] # valid but ugly
 0 | 1 | 2 | []       # invalid
+
+# Function calls can happen in the right side for pseudo-comparisons, but not on the left.
+2 = 1 + 1 # valid
+1 + 1 = 2 # invalid
 ```
 
 ## Pinning
