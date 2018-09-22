@@ -55,6 +55,10 @@ x = 1
 # Function calls can happen in the right side for pseudo-comparisons, but not on the left.
 2 = 1 + 1 # valid
 1 + 1 = 2 # invalid
+
+# However, we can use concatenation functions on the left
+[1] ++ rest = [1,2,3,4]
+<<1>> <> rest = <<1,2,3,4>>
 ```
 
 ## Pinning
