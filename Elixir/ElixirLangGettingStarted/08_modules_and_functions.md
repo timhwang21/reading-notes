@@ -88,7 +88,13 @@ Elixir, Ruby, and some others are Lisp-2 languages. Functions and other variable
 
 ### Lambda syntax
 
-Warning: super ugly!
+There is the "regular" anonymous function syntax:
+
+```elixir
+lambda = (a, b) -> a <> " " <> b end
+```
+
+There is also the function capture syntax, which can sometimes be shorter. Warning: super ugly!
 
 ```elixir
 # Elixir
