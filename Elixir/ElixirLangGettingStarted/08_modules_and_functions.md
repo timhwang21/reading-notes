@@ -33,10 +33,157 @@ zero n = False
 
 Elixir...
 
-* does NOT enforce exhaustive pattern matches
+* does NOT enforce exhaustive pattern matches (nonexhaustive match is now a runtime error -- SAD!)
+    * However, unreachable patterns ARE caught at compile time
 * can NOT pattern match on type (instead pattern matches on a typechecking function that returns a boolean)
 * does NOT make you want to die
 * DOES iterate through patterns top-down like Haskell
+
+### Desugared
+
+Similar to if-else, `do` can be desugared:
+
+```elixir
+defmodule Math do
+  def desugared(), do: "def is just a function"
+end
+```
+
+### Capturing functions
+
+Like Ruby lambda-ifying or proc-ifying:
+
+```elixir
+defmodule Test
+  def some_func do
+    # stuff
+  end
+end
+
+captured = &Test.some_func/0
+# need to specify arity to capture
+
+# invoke -- it's now a lambda, so need the dot
+captured.()
+```
+
+```ruby
+def some_func
+  # stuff
+end
+
+lambdafied = lambda(&method(:some_func))
+# or even the following, since everything's an object
+lambdafied2 = method(:some_func)
+
+# invoking
+lambdafied.call
+```
+
+Elixir, Ruby, and some others are Lisp-2 languages. Functions and other variables are in a different namespace. Lambdafying is in the "other variable" namespace so we need an alternate call syntax to invoke, in order to reduce ambiguity.
+
+### Lambda syntax
+
+Warning: super ugly!
+
+```elixir
+lambda = &(&1 <> " " <> &2)
+lambda.("hello", "world")
+# => "hello world"
+```
+
+Uniquely, Elixir uses a bash-like syntax for variables, rather than declaring them up front.
+
+Compare:
+
+```ruby
+# pretty vanilla
+my_lambda = lambda { |a, b| a + ' ' + b }
+my_lambda.call('hello', 'world')
+```
+
+```javascript
+# terse, but loses points for weak typing
+# lisp-1 so there's no distinction between function and lambda
+const lambda = (a, b) => a + ' ' + b;
+lambda('hello', 'world');
+```
+
+```typescript
+# better
+const lambda = (a: string, b: string): string => a + ' ' + b;
+lambda('hello', 'world');
+```
+
+```haskell
+# no special function declaration statement, so everything is basically a lambda
+lambda :: string -> string -> string
+lambda a b = a ++ " " ++ b
+lambda "hello" "world"
+```
+
+### Default arguments
+
+Defined using the `\\` keyword.
+
+Default arguments **change the arity of your function**:
+
+```elixir
+defmodule Test do
+  def func(x \\ 1) do
+    # foo
+  end
+end
+
+h Test.func/1 # returns something
+h Test.func/0 # also returns something! Two for one!
+```
+
+Lambdas **do not support default arguments** (wtf?). Default arguments change the arity of a function, and in Elixir lambdas can only have a single arity.
+
+Default arguments **are not evaluated during define time**:
+
+```elixir
+defmodule Test do
+  def func(x \\ 1 + 2 + 3) do
+    # foo
+  end
+end
+
+# 1 + 2 + 3 is evaluated every time the function is called without an argument
+```
+
+Default arguments **have to be in a header when there are multiple clauses**:
+
+```elixir
+defmodule Test do
+  def func(x \\ 1)
+  # notice there's no function body!
+
+  def func(0) do
+    # foo
+  end
+
+  def func(1) do
+    # bar
+  end
+end
+```
+
+Keep in mind that default functions reduce arity, so you may accidentally make an unreachable definition:
+
+```elixir
+defmodule Test do
+  def func() do
+    "I will always be reached"
+  end
+
+  # actually has arity zero when using all defaults so will never be reached if called with no args
+  def func(x \\ 1, y \\ 2, z \\ 3) do
+    "I will never be reached"
+  end
+end
+```
 
 ## Modules
 
@@ -69,5 +216,4 @@ Project/
   > test
     > *.exs
 ```
-
 
