@@ -8,6 +8,7 @@
 ### Guards and other variations
 
 ```elixir
+# Elixir
 defmodule Math do
   def zero?(0) do
     true
@@ -24,6 +25,7 @@ end
 Equivalent to:
 
 ```haskell
+-- Haskell
 module Math where
 
 zero :: Integer -> Boolean
@@ -54,6 +56,7 @@ end
 Like Ruby lambda-ifying or proc-ifying:
 
 ```elixir
+# Elixir
 defmodule Test
   def some_func do
     # stuff
@@ -68,6 +71,7 @@ captured.()
 ```
 
 ```ruby
+# Ruby
 def some_func
   # stuff
 end
@@ -87,6 +91,7 @@ Elixir, Ruby, and some others are Lisp-2 languages. Functions and other variable
 Warning: super ugly!
 
 ```elixir
+# Elixir
 lambda = &(&1 <> " " <> &2)
 lambda.("hello", "world")
 # => "hello world"
@@ -97,25 +102,29 @@ Uniquely, Elixir uses a bash-like syntax for variables, rather than declaring th
 Compare:
 
 ```ruby
+# Ruby
 # pretty vanilla
 my_lambda = lambda { |a, b| a + ' ' + b }
 my_lambda.call('hello', 'world')
 ```
 
 ```javascript
-# terse, but loses points for weak typing
-# lisp-1 so there's no distinction between function and lambda
+// Javascript
+// terse, but loses points for weak typing
+// lisp-1 so there's no distinction between function and lambda
 const lambda = (a, b) => a + ' ' + b;
 lambda('hello', 'world');
 ```
 
 ```typescript
-# better
+// Typescript
+// better
 const lambda = (a: string, b: string): string => a + ' ' + b;
 lambda('hello', 'world');
 ```
 
 ```haskell
+-- Haskell
 # no special function declaration statement, so everything is basically a lambda
 lambda :: string -> string -> string
 lambda a b = a ++ " " ++ b
@@ -216,4 +225,3 @@ Project/
   > test
     > *.exs
 ```
-
