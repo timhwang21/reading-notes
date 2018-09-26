@@ -7,7 +7,8 @@ As Elixir is an expression-based language, `=` returns the right side of the exp
 Matching can operate on the following:
 * Values
 * Shape
-* Type
+
+Elixir does **NOT** let you pattern match on type. Functions can type check via guards, but there is no way to do something like match by data constructor. Note that you CAN match on `true` and `false`, but unlike Haskell `true` and `false` are just symbols, not data constructors.
 
 ```elixir
 # bind the match to x, which is 1

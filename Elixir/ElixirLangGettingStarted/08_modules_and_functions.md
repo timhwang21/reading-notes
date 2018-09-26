@@ -154,7 +154,7 @@ h Test.func/1 # returns something
 h Test.func/0 # also returns something! Two for one!
 ```
 
-Lambdas **do not support default arguments** (wtf?). Default arguments change the arity of a function, and in Elixir lambdas can only have a single arity.
+Lambdas **do not support default arguments** (wtf?). Default arguments change the arity of a function, and in Elixir lambdas can only have a single arity. A theoretical `lambda = (a, b \\ 0) -> something` would produce `lambda./1` and `lambda./2`.
 
 Default arguments **are not evaluated during define time**:
 

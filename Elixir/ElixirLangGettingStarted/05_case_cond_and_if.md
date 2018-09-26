@@ -1,6 +1,6 @@
 # `case`, `cond`, and `if`
 
-Three control flow **macros**. They actually wrap 2-arity functions. Generally, one shouldn't be clever and call the actual underlying function, with the possible exception if if one-liners.
+Three control flow **macros**. They actually wrap 2-arity functions.
 
 This is a notable illustration of Elixir as an expression-oriented language. Control flow isn't a separate, statement-based syntax, it's just expression-based syntax disguised via macros.
 
@@ -27,7 +27,7 @@ case some_array do
   [x|xs] when x < 0 -> "do something when x < 0"
 ```
 
-Errors do not "bubble," instead they are swallowed. However, if no match occurs we get a `CaseClauseError` (like non-exhaustive pattern error in Haskell).
+Errors do not "bubble," instead they are swallowed. However, if no match occurs we get a `CaseClauseError` (like non-exhaustive pattern error in Haskell). For example, matching `[x|xs]` against the empty list `[]` normally errors; however if this is the first condition in a case statement that receives `[]`, we don't get an error thrown.
 
 ## `cond`
 

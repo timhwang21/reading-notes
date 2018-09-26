@@ -108,7 +108,7 @@ Map.get(my_map, :foo)
 Keyword.get(my_arg_list, :foo)
 ```
 
-```
+```elixir
 # initializing map with variable
 n = :foo
 my_map = %{ n => 1 }
@@ -121,6 +121,8 @@ my_map = %{ n => 1 }
 Map.put(my_map, :foo, "value set to :foo")
 Keyword.put(my_keyword_list, :foo, "bar")
 # Keywords are a bit trickier -- they remove all instances of :foo and then prepend the new foo: "bar"
+
+# deep functional setter
 put_in(my_nested_map[:foo][:bar], "value") # macro
 put_in(my_nested_map, [:foo, :bar], "value") # desugared
 update_in(my_nested_map[:foo][:bar], fn x -> x ** 2) # takes a calback to update
