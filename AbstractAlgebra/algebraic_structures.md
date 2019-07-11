@@ -8,11 +8,17 @@ Notes:
 - Some of my observations and comments are obvious / banal as I don't have a background in category theory, so please ignore those.
 - These are my personal notes and as such are likely to have glaring inaccuracies. I'll attempt to correct these over time.
 
+## Why abstract algebra?
+
+Oftentimes we know of a function (or, in algebra terms, a binary operation) that operates on some set. We might not know all the details about the function, but we are aware of the function having certain properties, such as the existence of an identity element. By nature of having this (and other) properties, our function and its domain can be categorized as a certain algebraic structure. The properties of said type of structure will hold true for our function, which we can prove without knowing anything else about our function.
+
+For example, we have no idea how some function works, besides that it has an inverse, is associative, is closed, and has an identity. Using these properties we can assert that our function and its domain form a group. Thus, we can assume that our function follows all group properties, such as uniqueness of identity, uniqueness of inverse for each element, etc.
+
 ## What are structures?
 
 A structure is an n-ple of *sets* and binary *operations*. At a bare minimum (magma), they are a tuple of a single set and a single binary operation. On a higher level, rings are n-ples of a single set, one or more operations, and one or more special elements from the set with specific properties.
 
-Operations must be closed, meaning that all possible outputs must themselves be members of the set the operation operates on. For example, subtraction over the set of positive integers is not closed, as negative numbers (which are not set members) can be produced.
+Operations must be closed, meaning that all possible outputs must themselves be members of the set the operation operates on. For example, addition over the set `S {1, 2, 3}` is not closed, as `3 + 1 = 4` and `4` is not in the set. Addition modulo 3 over this set is, however. Subtraction over the set of positive integers is not closed, as negative numbers (which are not set members) can be produced. Note that operations can be closed over infinite sets.
 
 A specific structure has some constraint or property on the set and/or the operation. For example, monoids require the existince of a particular element within the set, while groups require the operation to behave a certain way.
 
@@ -21,6 +27,8 @@ In the context of code (specifically Haskell), sets generally correspond to *typ
 Similarly to how sets correspond to types, structures correspond to *typeclasses*. For example, `(x, (++), [])` can be described as a monoid over the set `[x]` or an instance of the `Monoid` typeclass for the list type. The typeclass defintion is basically the parameterized structure definition, and a typeclass `instance` is the structure defined for a particular type.
 
 Numbers, strings, and sets are common example types used to express and grok structures. However, there's a discrepancy between category theory sets and Haskell (or any typed) sets, as sets in category theory are not parameterized (they're basically all `Set any`s).
+
+Functions themselves can be the elements of a given structure. For example, the set of geometric operations on a 2D square is an algebraic structure (specifically, a group). The domain is the set of all operations that take and return a shape (rotate 90deg, rotate 180deg, flip horizontal, etc.). The binary operator here is composition.
 
 Remember that structures are, at minimum, a tuple of a set and an operation; similarly, an instance of a typeclass is at minimum a tuple of a type and a function. Many types form many valid structure (or have many instances of typeclasses) via its functions. Thus, in Haskell we use `newtype` to identify which structure we're referring to.
 
@@ -32,10 +40,11 @@ Remember that structures are, at minimum, a tuple of a set and an operation; sim
   - `[]` is the identity for the monoid `([a], (++), [])`
 - Annihilator: `(x * 0 == 0 * x == 0)`. Sometimes simply written as `0`.
 - `\\`: Set deletion. `A \ x` means set `A` without element `x`.
-- `-`: Additive inverse function. `('') :: Monoid a => a -> a` Examples:
-  - `\x -> x + (-1)` for the group `(Num, (+), 0)`
-- `'`: Multiplicative inverse function, or 'complement'. `('') :: Monoid a => a -> a` Examples:
-  - `\x -> x * 1 / x` for the group `(Num \ 0, (*), 1)`
+- Inverse: an element is the inverse of another when it produces the identity when combined via the binary operator.
+  - `-`: Additive inverse function. `('') :: Monoid a => a -> a` Examples:
+    - `\x -> x + (-1)` for the group `(Num, (+), 0)`
+  - `'`: Multiplicative inverse function, or 'complement'. `('') :: Monoid a => a -> a`. Sometimes written as `^-1`. Examples:
+    - `\x -> x * 1 / x` for the group `(Num \ 0, (*), 1)`
 - `*` and `+`: Generic binary operators. They don't imply operation on numbers, and are only labeled as such via analogy to the integer monoid's addition and multiplication operation (as those are easy to grok).
   - Like addition, `+` is treated as commutative, with 0 being the identity and `-` being the inverse.
   - Like multiplication, `*` is treated as commutative, with 1 being the identity, 0 being the annihilator, and `'` being the inverse. `*` distributes over `+`.
@@ -89,6 +98,11 @@ A structure `S` with no operations.
 
 A set with a binary operation. Specifically, a tuple `(Set s, Operation :: Set s => s -> s -> s)`
 
+#### Examples
+
+- `(Number, (-), 0)`
+  - This is NOT a semigroup as subtraction is not associative. `(1 - 2) - 3 != 1 - (2 - 3)`.
+
 ```haskell
 (magma) a => a -> a -> a
 ```
@@ -137,9 +151,11 @@ A semigroup where the set has a two-sided identity (gives counterpart when passe
 #### Examples
 
 - `(Number, (+), 0)`
+  - This is also a group. The inverse of `n` if `-n`.
 - `(Number \ 0, 0, (*), 1)`
   - `0 :: Number` is not a part of this set, as `0 * id != id`
   - Note, however, that this is a semigroup as it is associative, and is a magma.
+  - Also note that this is not a group, as the inverse of elements will be fractions which are not in the set. If we used all nonzero reals instead of all nonzero integers, it would be a group.
 - `(Number, (max), 0)`
 - `(Finite set of numbers, (min), max)`
 - `(Set x, (and), Set x)`
@@ -171,7 +187,7 @@ id :: a
 
 ### Group
 
-A monoid where the operation has an inverse.
+A monoid where the operation has an inverse. An inverse function must exist (or, in other words, every element in the group must have an inverse).
 
 #### Constraints
 
@@ -180,6 +196,28 @@ A monoid where the operation has an inverse.
 - Operation
   - Associative
   - Has inverse
+
+#### Properties
+
+- There is only a single identity element.
+  - Can be proven by assuming there are two identities, `e1` and `e2`. For all `a`, `a * e1 == a` and `a * e2 == a`. Subbing in `e2` for the first `a` and `e1` for ther latter, we get `e2 * e1 == e2` and `e1 * e2 == e1`; therefore `e1 == e2` and there is only 1 identity.
+- Cancellation: if `a * b == a * c`, then `b == c`.
+  - Multiply both sides by the inverse of `a`: `a * b * a-1 == a * c * a-1`. Because of associativity we can cancel out `a` and its inverse for `b == c`.
+- In a Cayley table, each element appears once and only once in every row and column.
+  - If an element appeared multiple times, it would mean the function is not one-to-one.
+- Every element has exactly one inverse.
+  - `a` has two inverses `a-1` and `a-2`. `a * a-1 == id` and `a * a-2 == id`. By the cancellation rule, `a-1 == a-2` for all inverses of `a`.
+- `(a * b)-1 == (b-1) * (a-1)`
+  - Prove by multiplying both by `(a * b)` and then reducing.
+
+#### Examples
+
+- Componentwise addition of integers, matrices, and tuples are groups.
+- The example mentioned in the introduction of operations on a 2D square is a group.
+  - We can show that this group is closed by writing out a table of all inputs and outputs (known as a *Cayley table*).
+  - The identity is `rotate0 :: Shape a => a -> a`. Any function composed with `rotate0` gives the function unchanged.
+  - Function composition is known to be associative so we can skip this verbose proof of checking all possible composition combinations.
+  - We can show that all elements have an inverse because of the property of functions such that if a function is both onto (all elements of range are accessible from domain) and one-to-one, an inverse must exist. And all of the functions in the set fulfill this criteria, which can also be seen by writing out the table.
 
 ```haskell
 (group) a => a -> a -> a
