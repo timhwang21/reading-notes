@@ -26,9 +26,23 @@ Interestingly enough, what if we ignore the invertibility constraint? We then ge
 
 We've now seen that any single structure is a category with a single object that posses the same constraints as the structure. What about the category that didn't just have a single object, but instead had all objects that fit the given constraints? We then arrive at "canonical" categories of structures, e.g. `Set` being the category of all sets, `Grp` being the category of all groups, etc.
 
-## Category morphisms
+## Category morphisms? Functors
 
 As categories are themselves structures, there is a category for all categories `(category, morphism)` where the morphisms are functors.
+
+## What is a functor?
+
+A functor is a pair of:
+
+1. a function `a -> f a` that means "for every element in a category, there is a corresponding element in the counterpart category."
+2. for every element in `a`, a function `a -> b -> f a -> f b` that means "for every map between elements of a category, there is a corresponding map between elements of the counterpart category."
+
+Additionally, functors must satisfy the following axioms:
+
+1. `f (func1 . func2) == f func1 . f func2` when functions are in category (distribution)
+2. `f (id a) == id (f a)` (identity)
+
+From these laws we can derive other interesting properties, e.g. for every composition chain `f1 -> f2 -> ... -> fn` where each has type `a -> a`, there is exactly one function `f a -> f a` (as per rule 2).
 
 ## Functors of functors? Natural transformations
 
