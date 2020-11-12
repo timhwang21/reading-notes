@@ -61,8 +61,10 @@ fun foldL<A, B>(f: (B, A) -> B, acc: B, arr: A[]): B = foldL(f, f(acc, arr.first
 // When last argument is function, can place outside like a Ruby block
 ints.map({ x -> x ** 2 })
 ints.map { x -> x ** 2 }
+ints.map { it ** 2 }
 ints.fold(0, { acc, e -> acc + e })
 ints.fold(0) { acc, e -> acc + e }
+// cannot use it-syntax with 2-ary function
 ```
 
 ## Extensions
