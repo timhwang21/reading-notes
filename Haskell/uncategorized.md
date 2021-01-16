@@ -86,3 +86,62 @@ foldr `eats` [] [human, shark, fish, algae]
 foldl `eats` [] [human, shark, fish, algae]
 -- (((human eats shark) eats fish) eats algae)
 ```
+
+## What are Javascript promises and async/await?
+
+Promises resemble IO monads in terms of intended use, but more closely resemble Either monads in behavior, as promises aren't limited to IO operations.
+
+Some think that `async/await` truly unwraps promises, but remember that all `async` functions always return promises. So regardless of what it looks like is happening inside the function body, you've never left the "promise monad." In particular, note how closely `async/await` and do-notation resemble each other.
+
+```typescript
+function getFoo(): Promise<Foo>
+function useFoo(foo: Foo): Promise<Bar>
+
+getFoo().then(useFoo)
+
+// async/await
+async function() {
+  const foo = await getFoo()
+  return useFoo(foo)
+}
+```
+
+```haskell
+
+getFoo :: IO Foo
+useFoo :: Foo -> IO Bar
+
+getFoo >>= useFoo
+
+-- do-notation
+do
+  foo <- getFoo
+  return (useFoo(foo))
+```
+
+Note that the regular promise usage and the bind (`>>=`) usage make it more clear that you are still dealing with a container type. In contrast, both `async/await` and do-notation make it look like `foo` is a `Foo` instead of a `Promise<Foo>` / `IO Foo`. However, the final "return value" of the async function / do block is wrapped in the container.
+
+We can expand our example to add exception handling:
+
+```typescript
+async function() {
+  try {
+    const foo = await getFoo()
+    return useFoo(foo)
+  } catch(e) {
+    throw e
+  }
+}
+```
+
+```haskell
+do
+  foo <- getFoo()
+  case foo of
+    Right foo ->
+      return (useFoo(foo))
+    Left e ->
+      ioError e
+```
+
+Note that we usually put `Left` handling first, but I put it last for more parallel structure with JS. Also note that do-notation lets you naively return `foo` without error handling, which results in something similar to JS (the entire computation will just exit with the `Left` value).
